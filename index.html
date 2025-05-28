@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>뱅! 필드 카드 선택</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f0dc;
+        text-align: center;
+        padding: 50px;
+      }
+      h1 {
+        font-size: 32px;
+        margin-bottom: 20px;
+      }
+      #card {
+        border: 3px solid #333;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 30px auto;
+        width: 60%;
+        background-color: #fff;
+        box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.3);
+        display: none;
+      }
+      #card img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-top: 15px;
+      }
+      #card h2 {
+        margin-bottom: 12px;
+        font-size: 24px;
+        color: #b22222;
+      }
+      #card p {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      button {
+        padding: 12px 24px;
+        font-size: 16px;
+        margin: 10px;
+        background-color: #b22222;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #8b1a1a;
+      }
+
+      /* 모달 스타일 */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+      .modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        border-radius: 10px;
+      }
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .close:hover,
+      .close:focus {
+        color: black;
+      }
+      #modalList {
+        text-align: left;
+      }
+      #modalList div {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding: 5px 0;
+        border-bottom: 1px solid #ddd;
+      }
+      .card-name {
+        font-weight: bold;
+        width: 100px;
+        color: #b22222;
+      }
+      .card-description {
+        flex: 1;
+        text-align: left;
+        margin-left: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>뱅! 필드 카드 선택</h1>
+    <button onclick="drawCard()">랜덤 필드 카드 뽑기</button>
+    <button onclick="openModal()">모든 카드 목록 보기</button>
+
+    <div id="card">
+      <h2 id="cardName"></h2>
+      <p id="cardDescription"></p>
+      <img id="cardImage" src="" alt="카드 이미지" />
+    </div>
+
+    <!-- 모달 구조 -->
+    <div id="cardModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3>전체 카드 목록</h3>
+        <div id="modalList"></div>
+      </div>
+    </div>
+
+    <script>
+      const cards = [
+        {
+          name: "목사",
+          description: "<맥주> 카드를 사용할 수 없습니다.",
+          image:
+            "https://i.namu.wiki/i/iG5To_dZEm5K3z_J1KzrAOBtixKthJp6H-yQ1VtO-73X-_Vn1xQ7AL34wg0cqrJaakZclUwB58o_4vHhVckMSm4cAVszQsGjhW6vUWhN-KbV1r1ccNUC5tMoW70Lf3JmUf5it0LFQHAx5I7S5zBS2g.webp",
+        },
+        {
+          name: "예배 시간",
+          description: "자기 차례에, <뱅!> 카드를 사용할 수 없습니다.",
+          image:
+            "https://i.namu.wiki/i/3egKSjDVcgn4-M2kE_D0bf8kjcDl4D8O_pdTV9XifGBqKW9uIe-kcJLqNuOgnCo0fskVvlhbJ6I9PU6h9SuB7sCVNQftKnRTG2dLYBL2YUlH685mCgzi3Anp0tjTzUj7HEUBlgmyTl7qPNgKZ4TCqQ.webp",
+        },
+        {
+          name: "저주",
+          description: "모든 카드의 기호를 스페이드로 간주합니다.",
+          image:
+            "https://i.namu.wiki/i/vrVDyh3Ga4qxhKWfwMQyxrHzGskxIp3dzCT2Gs1PQ_ekgOOjz1NiD0DsGA0Ba0VhueDiDGo8rS3ofiTGeLeodmZNz6Upasj7QyIPzB-WSuelafexN09G5mgIFchBv0leWgtF5EWtMW1Zqp9TlZvWhQ.webp",
+        },
+        {
+          name: "축복",
+          description: "모든 카드의 기호를 하트로 간주합니다.",
+          image:
+            "https://i.namu.wiki/i/vn7dD2OlRbGfkDBUtE7Myo9oY-uG54SId040La9n5EgQ8DnCLQ7jio4LQon23twXkXTf8GcuNz_aPKZRKiVysEF6lBzlK7ai3WZQu9naUJ8pqIr6SP5cSq6C0DrLr2pBL_CTRWXqBaZen9B1RMjhKg.webp",
+        },
+        {
+          name: "의사",
+          description:
+            "이 카드가 테이블 가운데 놓인 시점에, 가장 생명력이 낮은 플레이어들은 생명력을 1씩 회복합니다.",
+          image:
+            "https://i.namu.wiki/i/Kxrwc8J-PhkA7Myeuwfm5zAaVvLe_xBkcxawPrAE2LU5KmbMtPu5SUpmUPDcRndGAX2AyrzIdVCOiOfVCVw7XHvXD0IyTUnb-CTt0IJTsy06ngVygl9TiZVBtvD7ziNmkkFWx9Gzdh9LoJBsNvWxxw.webp",
+        },
+        {
+          name: "숙취",
+          description: "모든 인물은 자기 특수 능력을 사용할 수 없습니다.",
+          image:
+            "https://i.namu.wiki/i/yYn4gxQbQZZwQuVSaVNfTnEWZMop1uMn6sq3KROQFLb60o7jIFealft-W_eFFoWwplWb2AXRsfyG2pAsalStkoO08Lrrx0dsMScWOg-nKcGqGGh4oVnQwwa3Q9yHFFlqLDsOt1UTvtaFX8MrA8AUgA.webp",
+        },
+        {
+          name: "댈턴 갱단",
+          description:
+            "이 카드가 테이블 가운데 놓인 시점에, 자기 앞에 파란색 테두리 카드를 내려놓은 각 플레이어는 그중 1장을 골라 버려야 합니다.",
+          image:
+            "https://i.namu.wiki/i/f34DTlx48Cpc2WjB7RgX0nasIYcWWC1BkXY4SaeRxE4j19-nwOKQDoQt2vv6d6ayseGPRcOQkGorO8sJAYnX7iziKM1oQM2v6lbKykeKIZIWTFueGTKOZ1Taxh_TWgc9NBt0-JPWCSWv4xcKz663Fg.webp",
+        },
+        {
+          name: "골드러시",
+          description:
+            "이번 라운드 동안, 보안관부터 시작해 반시계 방향으로 차례가 돌아갑니다. (카드 효과는 시계 방향으로 적용됩니다.)",
+          image:
+            "https://i.namu.wiki/i/exeHaKhkqBw4MESjvGCbCZUtaBTee6286VUK7RQbCba-bVIy1ip2bXmwMK1VGhR87Mt0U_YF8PNig4-uxVmertb52UO9i24tiiPCaAMnxVsFYj9zbIR-6LEvGTlnk3VyIjezIj3EpxxWFYfnMFF_Vw.webp",
+        },
+        {
+          name: "기차 도착",
+          description:
+            "자기 차례의 카드 가져오기! 단계에, 카드 1장을 더 가져옵니다.",
+          image:
+            "https://i.namu.wiki/i/jydMXXcY7a3mFqlVnBGdAuOrmHKzNpOrOH_phtqAqRpjiN7mQkHYUMNgrnI1ByqsmfEAuT88eTuIyRndTuKCL_jB5a1gXqECoZAcNbl4vx-Cj4XkaagQbAA4iRmtFiWOWiTuFzj14SNlZkpFqXO-DA.webp",
+        },
+        {
+          name: "총격전",
+          description: "자기 차례에, <뱅!> 카드를 두 번 사용할 수 있습니다.",
+          image:
+            "https://i.namu.wiki/i/lPquXE_IndWmazHFBzbT-21NjaDk0sfQNRrcJSctCwgR-2FqkOlK7sW1dxPxE_59_h8UbhPINF9sjobSiP5jbkLQGqgta1h3ja90WGizlRI9-2-Df_16hyF3NVX6fLFOyIZUvV6fJ1UrwN6ANFELcw.webp",
+        },
+        {
+          name: "유령 마을",
+          description:
+            "제거된 플레이어들은 각자의 원래 차례가 될 때 유령이 되어 게임에 돌아옵니다. 유령은 카드 가져오기! 단계에 (2장이 아닌) 3장을 가져가며, 사망하지 않습니다. 유령은 자기 차례가 끝나면 게임에서 제거됩니다.",
+          image:
+            "https://i.namu.wiki/i/UEDH96I6gd34aur76JFzAhADseYkrg1I9YQ08NPmSUwiTe9AnbAaYat6o0VnPCt73teMjbQn-iY0I1w1WL2GGnCZDgSmqRID_TAkBh9m07Gjq9MVDw5UB6Jtd0aOPaALZC6RX3LpZEKCDkYbU26oxg.webp",
+        },
+        {
+          name: "갈증",
+          description:
+            "자기 차례의 카드 가져오기! 단계에, 카드 1장만 가져옵니다.",
+          image:
+            "https://i.namu.wiki/i/nlCyxcL1Z5TpI_KpMCXSYBlBnMD0vgbOEeFWLcm1JfVG7_GK56TV1APMZO8QoMwelQgJzvgNKqOvoOlPrNnHMT5wcSV8bkeVjiF2QOoaRcsJfaAmY-qbS4S9_WLD8KWrYXuLE3brIuhrJdk8rH1B4Q.webp",
+        },
+        {
+          name: "하이 눈",
+          description: "자기 차례가 시작될 때, 생명력 1을 잃습니다.",
+          image:
+            "https://i.namu.wiki/i/rJp9r5QPpBbq0_3Q9pn901KqZfMLGtgOxI1TIFbzbQWDbihi9YEUVCTZZ3yHDAUp8HyAWMttjnTs9KOxTU1qHzjovf6w9AC1JkKBACYPzZy6mmIuK0HLZVkxCyIK3WnAN8sunwXN8-gHkhCvAhRMuA.webp",
+        },
+        {
+          name: "수갑",
+          description:
+            "이번 자기 차례 동안에는 자기가 정한 무늬의 카드만 사용할 수 있습니다. 카드 가져오기! 단계에 카드를 가져온 후 직접 카드 무늬 한 종류를 지정합니다.",
+          image:
+            "https://i.namu.wiki/i/3HxmALhaU6EmK4xI8BPnjFx4lzYiVFsR5uK1O0fcIIeN4f8MptK6BXvq4-fq5MCOWPds4uBePvyzBqpbDlXME8yqQQkkwPpxlUFf6DNKXe8Q2qjLFccbcwA_Ld7KzYqfSsmw9YMYPmwZWS5jzyx4-g.webp",
+        },
+        {
+          name: "변신의 귀재",
+          description:
+            "자기 차례의 시작에, 생명력을 표시하는 데 사용하던 인물 카드를 봅니다. 원한다면 지금 인물 카드를 그 인물 카드로 교체할 수 있습니다. 교체할 경우 이전에 남아있던 생명력과는 관계 없이 생명력 2로 시작합니다.",
+          image:
+            "https://i.namu.wiki/i/jx9bwEK65YH4oBYVl6AhkB840MSzSXWH4nwGkABocvHEezL1zvmnuy6LSy1kmwWGINnDIo1z1B49YW49HDTAZh2v55U9s3oeuapa3fsDeX-MRHj8evNh7EjeBOH4BschGyZnx4mM14sj9tjrHRv_eg.webp",
+        },
+      ];
+
+      function drawCard() {
+        const randomIndex = Math.floor(Math.random() * cards.length);
+        const card = cards[randomIndex];
+
+        document.getElementById("cardName").textContent = card.name;
+        document.getElementById("cardDescription").textContent =
+          card.description;
+        document.getElementById("cardImage").src = card.image;
+        document.getElementById("cardImage").alt = `${card.name} 이미지`;
+        document.getElementById("card").style.display = "block";
+      }
+
+      function openModal() {
+        const modal = document.getElementById("cardModal");
+        const listElement = document.getElementById("modalList");
+        listElement.innerHTML = "";
+
+        cards.forEach((card) => {
+          const listItem = document.createElement("div");
+          listItem.innerHTML = `<span class="card-name">${card.name}</span><span class="card-description">${card.description}</span>`;
+          listElement.appendChild(listItem);
+        });
+
+        modal.style.display = "block";
+      }
+
+      function closeModal() {
+        document.getElementById("cardModal").style.display = "none";
+      }
+
+      window.onclick = function (event) {
+        const modal = document.getElementById("cardModal");
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>
