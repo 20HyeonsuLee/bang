@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>뱅! 필드 카드 선택</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f0dc;
+        text-align: center;
+        padding: 50px;
+      }
+      h1 {
+        font-size: 32px;
+        margin-bottom: 20px;
+      }
+      #card {
+        border: 3px solid #333;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 30px auto;
+        width: 50%;
+        background-color: #fff;
+        box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.3);
+        display: none;
+      }
+      #card h2 {
+        margin-bottom: 12px;
+        font-size: 24px;
+        color: #b22222;
+      }
+      #card p {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      button {
+        padding: 12px 24px;
+        font-size: 16px;
+        background-color: #b22222;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #8b1a1a;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>뱅! 필드 카드 선택</h1>
+    <button onclick="drawCard()">필드 카드 선택하기</button>
+
+    <div id="card">
+      <h2 id="cardName"></h2>
+      <p id="cardDescription"></p>
+    </div>
+
+    <script>
+      const cards = [
+        {
+          name: "침묵의 규칙",
+          description: "말을 하면 생명력 1이 줄어듭니다.",
+        },
+        {
+          name: "카드 비용 증가",
+          description: "이번 턴 동안 말을 하면 카드를 한 장 버려야 합니다.",
+        },
+        {
+          name: "특정 금지어",
+          description:
+            "보안관이 지정한 특정 단어를 말하면 생명력이 1 줄어듭니다.",
+        },
+        {
+          name: "긴장된 공기",
+          description: "아무도 손에 카드를 5장 이상 들 수 없습니다.",
+        },
+        {
+          name: "조준경 무효",
+          description: "모든 거리 +1 보너스 효과가 무효화됩니다.",
+        },
+        {
+          name: "전원 조준경 장착",
+          description: "모든 플레이어의 거리가 1 증가합니다.",
+        },
+        {
+          name: "무법자 보너스",
+          description:
+            "무법자는 카드를 뽑을 때 한 장 더 뽑습니다.(직업 카드를 공개해서 무법자임을 증명해야 합니다.)",
+        },
+        {
+          name: "부관 보너스",
+          description:
+            "부관은 카드를 뽑을 때 한 장 더 뽑습니다.(직업 카드를 공개해서 부관임을 증명해야 합니다.)",
+        },
+        {
+          name: "배신자 보너스",
+          description:
+            "부관은 카드를 뽑을 때 한 장 더 뽑습니다.(직업 카드를 공개해서 배신자임을 증명해야 합니다.)",
+        },
+      ];
+
+      function drawCard() {
+        const randomIndex = Math.floor(Math.random() * cards.length);
+        const card = cards[randomIndex];
+
+        document.getElementById("cardName").textContent = card.name;
+        document.getElementById("cardDescription").textContent =
+          card.description;
+        document.getElementById("card").style.display = "block";
+      }
+    </script>
+  </body>
+</html>
